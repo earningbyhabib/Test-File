@@ -2,77 +2,92 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <title>টেম্প মেইল রিসিভার</title>
+  <title>টেম্প মেইল সিস্টেম</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; text-align: center; }
-    .box { background: white; padding: 20px; max-width: 600px; margin: auto; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
-    .email { font-size: 18px; margin-bottom: 10px; word-break: break-all; }
-    .inbox { margin-top: 20px; background: #f0f0f0; padding: 10px; border-radius: 5px; text-align: left; max-height: 300px; overflow-y: auto; }
-    .mail { background: white; padding: 10px; margin-bottom: 10px; border-left: 4px solid #007bff; border-radius: 5px; }
-    button { margin: 5px; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; background-color: #007bff; color: white; }
+    body { font-family: sans-serif; background: #f1f1f1; text-align: center; padding: 20px; }
+    .box { background: white; padding: 20px; margin: auto; max-width: 500px; border-radius: 10px; box-shadow: 0 0 10px #aaa; }
+    button { padding: 10px 20px; margin: 10px; border: none; background: #007bff; color: white; border-radius: 5px; }
+    .inbox { background: #f9f9f9; padding: 10px; border-radius: 5px; text-align: left; max-height: 300px; overflow-y: auto; }
+    .mail { margin-bottom: 10px; padding: 10px; background: white; border-left: 4px solid #28a745; }
   </style>
 </head>
 <body>
-
 <div class="box">
-  <h2>📨 টেম্প মেইল রিসিভার</h2>
-  <div id="email" class="email">ইমেইল লোড হচ্ছে...</div>
-  <button onclick="generateEmail()">✏️ পরিবর্তন</button>
+  <h2>📬 টেম্প মেইল</h2>
+  <div id="email">লোড হচ্ছে...</div>
   <button onclick="copyEmail()">📋 কপি</button>
-  <div class="inbox" id="inbox">📭 ইনবক্স লোড হচ্ছে...</div>
+  <div class="inbox" id="inbox">📭 মেইল আসলে এখানে দেখাবে</div>
 </div>
 
 <script>
 let email = '';
-let login = '';
-let domain = '';
+let token = '';
 
 function generateEmail() {
-  login = Math.random().toString(36).substring(2, 10);
-  domain = "1secmail.com";
-  email = `${login}@${domain}`;
-  document.getElementById('email').innerText = email;
-  loadInbox();
+  fetch("https://api.mail.tm/domains")
+    .then(res => res.json())
+    .then(data => {
+      const domain = data["hydra:member"][0].domain;
+      const username = Math.random().toString(36).substring(2, 10);
+      email = `${username}@${domain}`;
+      document.getElementById('email').innerText = email;
+
+      // Create account
+      fetch("https://api.mail.tm/accounts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ address: email, password: "123456" })
+      })
+      .then(() => loginToMailTM(email));
+    });
+}
+
+function loginToMailTM(email) {
+  fetch("https://api.mail.tm/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ address: email, password: "123456" })
+  })
+  .then(res => res.json())
+  .then(data => {
+    token = data.token;
+    loadInbox();
+  });
+}
+
+function loadInbox() {
+  fetch("https://api.mail.tm/messages", {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  .then(res => res.json())
+  .then(data => {
+    const inbox = document.getElementById('inbox');
+    inbox.innerHTML = '';
+    if (!data["hydra:member"].length) {
+      inbox.innerHTML = '❌ এখনো কোন মেইল নেই';
+      return;
+    }
+    data["hydra:member"].forEach(msg => {
+      const div = document.createElement('div');
+      div.className = 'mail';
+      div.innerHTML = `<b>প্রেরক:</b> ${msg.from.address}<br><b>বিষয়:</b> ${msg.subject}`;
+      inbox.appendChild(div);
+    });
+  });
 }
 
 function copyEmail() {
   navigator.clipboard.writeText(email);
-  alert("✅ কপি হয়েছে: " + email);
+  alert("✅ ইমেইল কপি হয়েছে: " + email);
 }
 
-function loadInbox() {
-  const inbox = document.getElementById('inbox');
-  inbox.innerHTML = "📭 ইনবক্স লোড হচ্ছে...";
-  fetch(`https://www.1secmail.com/api/v1/?action=getMessages&login=${login}&domain=${domain}`)
-    .then(res => res.json())
-    .then(data => {
-      inbox.innerHTML = '';
-      if (data.length === 0) {
-        inbox.innerHTML = "❌ কোন মেইল পাওয়া যায়নি!";
-        return;
-      }
-      data.forEach(msg => {
-        const item = document.createElement('div');
-        item.className = 'mail';
-        item.innerHTML = `<b>প্রেরক:</b> ${msg.from}<br>
-                          <b>বিষয়:</b> ${msg.subject}<br>
-                          <b>সময়:</b> ${msg.date}`;
-        inbox.appendChild(item);
-      });
-    })
-    .catch(err => {
-      inbox.innerHTML = "❌ ইনবক্স লোড করতে সমস্যা হয়েছে!";
-    });
-}
-
-// প্রতি 10 সেকেন্ড পরপর চেক করবে
+// Auto inbox refresh
 setInterval(() => {
-  if (email) loadInbox();
+  if (token) loadInbox();
 }, 10000);
 
-// প্রথমবার চালু
+// প্রথমবার ইমেইল তৈরি
 generateEmail();
 </script>
-
 </body>
 </html>
