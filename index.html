@@ -4,71 +4,73 @@
   <meta charset="UTF-8">
   <title>টেম্প মেইল রিসিভার</title>
   <style>
-    body { font-family: sans-serif; background: #f0f0f0; padding: 20px; text-align: center; }
-    .box { background: white; border-radius: 10px; padding: 20px; max-width: 500px; margin: auto; box-shadow: 0 0 10px #ccc; }
+    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; text-align: center; }
+    .box { background: white; padding: 20px; max-width: 600px; margin: auto; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
     .email { font-size: 18px; margin-bottom: 10px; word-break: break-all; }
-    button { padding: 8px 15px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; }
-    .inbox { margin-top: 20px; text-align: left; max-height: 300px; overflow-y: auto; background: #f9f9f9; border: 1px solid #ccc; padding: 10px; border-radius: 5px; }
-    .mail-item { margin-bottom: 10px; padding: 8px; background: #fff; border-radius: 5px; border-left: 4px solid #2196f3; }
+    .inbox { margin-top: 20px; background: #f0f0f0; padding: 10px; border-radius: 5px; text-align: left; max-height: 300px; overflow-y: auto; }
+    .mail { background: white; padding: 10px; margin-bottom: 10px; border-left: 4px solid #007bff; border-radius: 5px; }
+    button { margin: 5px; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; background-color: #007bff; color: white; }
   </style>
 </head>
 <body>
 
 <div class="box">
-  <h2>📧 টেম্প মেইল রিসিভার</h2>
-  <div class="email" id="email">লোড হচ্ছে...</div>
-  <button onclick="generateEmail()">✏️ মেইল পরিবর্তন</button>
+  <h2>📨 টেম্প মেইল রিসিভার</h2>
+  <div id="email" class="email">ইমেইল লোড হচ্ছে...</div>
+  <button onclick="generateEmail()">✏️ পরিবর্তন</button>
   <button onclick="copyEmail()">📋 কপি</button>
-
-  <div class="inbox" id="inbox">📭 মেইল লোড হচ্ছে...</div>
+  <div class="inbox" id="inbox">📭 ইনবক্স লোড হচ্ছে...</div>
 </div>
 
 <script>
 let email = '';
-let inboxBox = document.getElementById('inbox');
+let login = '';
+let domain = '';
 
 function generateEmail() {
-  const name = Math.random().toString(36).substring(2, 10);
-  email = `${name}@tmailor.com`;
+  login = Math.random().toString(36).substring(2, 10);
+  domain = "1secmail.com";
+  email = `${login}@${domain}`;
   document.getElementById('email').innerText = email;
   loadInbox();
 }
 
 function copyEmail() {
-  navigator.clipboard.writeText(email).then(() => {
-    alert("✅ কপি হয়েছে: " + email);
-  });
+  navigator.clipboard.writeText(email);
+  alert("✅ কপি হয়েছে: " + email);
 }
 
 function loadInbox() {
-  inboxBox.innerHTML = "📭 মেইল লোড হচ্ছে...";
-  fetch(`https://tmailor.com/api/mailbox/${email}`)
+  const inbox = document.getElementById('inbox');
+  inbox.innerHTML = "📭 ইনবক্স লোড হচ্ছে...";
+  fetch(`https://www.1secmail.com/api/v1/?action=getMessages&login=${login}&domain=${domain}`)
     .then(res => res.json())
     .then(data => {
-      inboxBox.innerHTML = '';
-      if (!data.messages || data.messages.length === 0) {
-        inboxBox.innerHTML = "❌ এখনো কোন মেইল আসেনি!";
+      inbox.innerHTML = '';
+      if (data.length === 0) {
+        inbox.innerHTML = "❌ কোন মেইল পাওয়া যায়নি!";
         return;
       }
-      data.messages.forEach(msg => {
+      data.forEach(msg => {
         const item = document.createElement('div');
-        item.className = 'mail-item';
-        item.innerHTML = `<b>📨 প্রেরক:</b> ${msg.from} <br> 
-                          <b>📝 বিষয়:</b> ${msg.subject} <br> 
-                          <b>⏰ সময়:</b> ${msg.date}`;
-        inboxBox.appendChild(item);
+        item.className = 'mail';
+        item.innerHTML = `<b>প্রেরক:</b> ${msg.from}<br>
+                          <b>বিষয়:</b> ${msg.subject}<br>
+                          <b>সময়:</b> ${msg.date}`;
+        inbox.appendChild(item);
       });
-    }).catch(err => {
-      inboxBox.innerHTML = "❌ লোড করতে সমস্যা হচ্ছে।";
+    })
+    .catch(err => {
+      inbox.innerHTML = "❌ ইনবক্স লোড করতে সমস্যা হয়েছে!";
     });
 }
 
-// Auto-refresh inbox every 10 seconds
+// প্রতি 10 সেকেন্ড পরপর চেক করবে
 setInterval(() => {
   if (email) loadInbox();
 }, 10000);
 
-// Initial run
+// প্রথমবার চালু
 generateEmail();
 </script>
 
