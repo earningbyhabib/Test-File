@@ -1,189 +1,315 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <title>ফেসবুক ভেরিফিকেশন মেইল</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BDT Ludo - ডাউনলোড করুন</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Tiro+Bangla&display=swap');
+    
+    :root {
+      --primary: #6c63ff;
+      --primary-dark: #5a52e0;
+      --secondary: #4CAF50;
+      --secondary-dark: #3e8e41;
+      --accent: #ff6b6b;
+      --light: #f8f9fa;
+      --dark: #343a40;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Tiro Bangla', 'Helvetica Neue', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-container {
+      background: white;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    header img {
+      height: 40px;
+      width: auto;
+    }
+
+    .logo-text {
+      font-size: 22px;
+      font-weight: bold;
+      color: var(--primary);
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      gap: 20px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin: 0;
+      color: var(--dark);
+      line-height: 1.3;
+      text-align: center;
+    }
+
+    p {
+      color: #666;
+      font-size: 16px;
       max-width: 600px;
       margin: 0 auto;
-      padding: 20px;
+      line-height: 1.6;
+      text-align: center;
     }
-    #email {
-      font-weight: bold;
-      word-break: break-all;
+
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
       margin: 10px 0;
-      padding: 10px;
-      background: #f0f0f0;
-      border-radius: 5px;
     }
-    button {
-      padding: 8px 15px;
-      margin: 5px;
-      cursor: pointer;
-      background: #4CAF50;
+
+    .download-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
       color: white;
-      border: none;
-      border-radius: 4px;
-    }
-    .message {
-      border: 1px solid #ddd;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
-      background: #f9f9f9;
-    }
-    .fb-code {
-      color: green;
+      padding: 15px 30px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 18px;
       font-weight: bold;
-      font-size: 1.2em;
-      margin-top: 5px;
+      border: none;
+      box-shadow: 0 4px 15px rgba(108, 99, 255, 0.4);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.3);
     }
-    #status {
-      margin: 10px 0;
-      color: #666;
-      font-style: italic;
+
+    .download-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(108, 99, 255, 0.5);
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    }
+
+    .download-button:active {
+      transform: translateY(1px);
+    }
+
+    .download-button::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: 0.5s;
+    }
+
+    .download-button:hover::after {
+      left: 100%;
+    }
+
+    .image-container {
+      margin: 0 auto;
+      padding: 15px;
+      border-radius: 12px;
+      background: white;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      border: 2px solid;
+      border-image: linear-gradient(45deg, var(--primary), var(--accent)) 1;
+      max-width: 350px;
+      width: 90%;
+      transition: all 0.3s ease;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .contact-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 14px;
+      border: none;
+      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.3);
+    }
+
+    .contact-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    }
+
+    .contact-button::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: 0.5s;
+    }
+
+    .contact-button:hover::after {
+      left: 100%;
+    }
+
+    .counter {
+      padding: 10px 15px;
+      background-color: var(--light);
+      border-radius: 8px;
+      font-weight: bold;
+      border: 2px solid;
+      border-image: linear-gradient(45deg, #6c63ff, #ff6b6b) 1;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .footer {
+      margin-top: auto;
+      padding: 15px;
+      font-size: 12px;
+      color: #888;
+      text-align: center;
+      background: white;
+      border-top: 1px solid #eee;
+    }
+
+    @keyframes glow {
+      0% {
+        box-shadow: 0 0 5px rgba(108, 99, 255, 0.5);
+        border-color: rgba(108, 99, 255, 0.8);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(108, 99, 255, 0.8);
+        border-color: rgba(108, 99, 255, 1);
+      }
+      100% {
+        box-shadow: 0 0 5px rgba(108, 99, 255, 0.5);
+        border-color: rgba(108, 99, 255, 0.8);
+      }
+    }
+
+    .glow-border {
+      animation: glow 3s infinite;
     }
   </style>
 </head>
 <body>
-  <h2>ফেসবুক ভেরিফিকেশন মেইল</h2>
-  <div id="status">সিস্টেম প্রস্তুত হচ্ছে...</div>
-  <div id="email">ইমেইল তৈরি করা হচ্ছে...</div>
-  <button onclick="copyEmail()">ইমেইল কপি করুন</button>
-  <button onclick="generateNewEmail()">নতুন ইমেইল তৈরি করুন</button>
+
+  <div class="header-container">
+    <header>
+      <div class="logo-container">
+        <img src="https://i.postimg.cc/V5Q1KzN2/1753765915761.png" alt="LT Play Logo">
+        <div class="logo-text">LT Play</div>
+      </div>
+    </header>
+  </div>
   
-  <h3>ইনবক্স</h3>
-  <div id="inbox">মেইল চেক করা হচ্ছে...</div>
+  <div class="main-content">
+    <h1>বাংলাদেশের সেরা লুডু টুর্নামেন্ট প্ল্যাটফর্ম</h1>
+    <p>প্রতিদিন লুডু টুর্নামেন্ট খেলে হাজার হাজার টাকা আয় করতে এখনই ডাউনলোড করুন LT Play মোবাইল অ্যাপ।</p>
+    
+    <div class="button-container">
+      <a class="download-button glow-border" href="https://drive.usercontent.google.com/download?id=17xH0VnAJgL-OvaPuWnUYaaNiYFcGeM7b&export=download&authuser=0" target="_blank">
+        <span>Download Now</span> 🚀
+      </a>
+    </div>
+    
+    <div class="image-container glow-border">
+      <img src="https://i.postimg.cc/J73T01Ng/1753968295915.png" alt="Ludo Players">
+    </div>
+    
+    <div class="button-container">
+      <a href="https://t.me/Developer_EBH" class="contact-button" target="_blank">
+        <span>Contact Admin</span> 👨‍💻
+      </a>
+    </div>
+    
+    <div class="counter">
+      ডাউনলোড সংখ্যা: <span id="downloadCount">12,345</span>
+    </div>
+  </div>
+  
+  <div class="footer">
+    © 2023 LT Play. All rights reserved.
+  </div>
 
   <script>
-    let currentEmail = '';
-    let mailCheckInterval;
-    let retryCount = 0;
-    const MAX_RETRIES = 3;
-
-    // বিকল্প API এন্ডপয়েন্ট
-    const API_ENDPOINTS = [
-      'https://api.temp-mail.org/v1',
-      'https://api.internal.temp-mail.io/api/v3',
-      'https://api.mail.tm'
-    ];
-
-    async function generateNewEmail() {
-      try {
-        updateStatus('নতুন ইমেইল তৈরি করা হচ্ছে...');
-        document.getElementById('inbox').innerHTML = 'লোড হচ্ছে...';
-        
-        // পূর্বের ইন্টারভাল ক্লিয়ার
-        if(mailCheckInterval) clearInterval(mailCheckInterval);
-        retryCount = 0;
-
-        // API রোটেশন
-        const apiBase = API_ENDPOINTS[retryCount % API_ENDPOINTS.length];
-        
-        // নতুন ইমেইল রিকোয়েস্ট
-        const response = await fetch(`${apiBase}/email/new`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            min_name_length: 10,
-            max_name_length: 10
-          })
-        });
-
-        if (!response.ok) throw new Error('API রেসপন্স ব্যর্থ');
-
-        const data = await response.json();
-        currentEmail = data.email;
-        document.getElementById('email').textContent = currentEmail;
-        updateStatus('ইমেইল তৈরি সম্পন্ন!');
-
-        // ইনবক্স চেক শুরু
-        checkMail();
-        mailCheckInterval = setInterval(checkMail, 5000);
-
-      } catch(error) {
-        retryCount++;
-        if(retryCount < MAX_RETRIES) {
-          updateStatus(`পুনরায় চেষ্টা করা হচ্ছে (${retryCount}/${MAX_RETRIES})...`);
-          setTimeout(generateNewEmail, 2000);
-        } else {
-          updateStatus('ত্রুটি: ইমেইল তৈরি করতে ব্যর্থ। পরে আবার চেষ্টা করুন', 'error');
-          document.getElementById('email').textContent = 'ত্রুটি: সার্ভার সমস্যা';
+    // Enhanced counter animation with random increment
+    function animateCounter(target, start, end, duration) {
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const value = Math.floor(progress * (end - start) + start);
+        target.textContent = value.toLocaleString('bn-BD');
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
         }
-      }
+      };
+      window.requestAnimationFrame(step);
     }
-
-    async function checkMail() {
-      if (!currentEmail) return;
-      
-      try {
-        updateStatus('ইনবক্স চেক করা হচ্ছে...');
-        
-        // API রোটেশন
-        const apiBase = API_ENDPOINTS[retryCount % API_ENDPOINTS.length];
-        const response = await fetch(`${apiBase}/email/${currentEmail}/messages`);
-        
-        if (!response.ok) throw new Error('ইনবক্স লোড করতে ব্যর্থ');
-        
-        const messages = await response.json();
-        let inboxHTML = '';
-        
-        if(messages.length > 0) {
-          messages.forEach(msg => {
-            let messageContent = msg.body_text || msg.subject || 'কোনো টেক্সট নেই';
-            
-            inboxHTML += `
-              <div class="message">
-                <strong>থেকে:</strong> ${msg.from}<br>
-                <strong>বিষয়:</strong> ${msg.subject}<br>
-                <div>${messageContent}</div>
-            `;
-            
-            // ফেসবুক কোড চেক
-            if(msg.from.includes('facebook') || msg.subject.includes('Facebook')) {
-              const code = extractFacebookCode(messageContent);
-              if(code) {
-                inboxHTML += `<div class="fb-code">ফেসবুক ভেরিফিকেশন কোড: ${code}</div>`;
-                updateStatus('ফেসবুক কোড পাওয়া গেছে!', 'success');
-              }
-            }
-            
-            inboxHTML += `</div>`;
-          });
-        } else {
-          inboxHTML = 'কোনো মেইল পাওয়া যায়নি';
-        }
-        
-        document.getElementById('inbox').innerHTML = inboxHTML;
-      } catch(error) {
-        console.error('মেইল চেক করতে ব্যর্থ:', error);
-      }
-    }
-
-    function updateStatus(message, type = 'info') {
-      const statusEl = document.getElementById('status');
-      statusEl.textContent = message;
-      statusEl.style.color = type === 'error' ? 'red' : 
-                            type === 'success' ? 'green' : '#666';
-    }
-
-    function extractFacebookCode(text) {
-      const codeMatch = text.match(/\b\d{5,8}\b/);
-      return codeMatch ? codeMatch[0] : null;
-    }
-
-    function copyEmail() {
-      if (!currentEmail) return;
-      navigator.clipboard.writeText(currentEmail);
-      updateStatus('ইমেইল কপি করা হয়েছে!', 'success');
-    }
-
-    // পেজ লোড হওয়ার সাথে সাথে ইমেইল তৈরি
-    window.onload = generateNewEmail;
+    
+    // Initialize counter with random increment
+    const counter = document.getElementById('downloadCount');
+    const currentCount = parseInt(counter.textContent.replace(/,/g, ''));
+    const newCount = currentCount + Math.floor(Math.random() * 500) + 100;
+    animateCounter(counter, currentCount, newCount, 2000);
   </script>
+
 </body>
 </html>
